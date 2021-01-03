@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, ParamMap, Router } from "@angular/router";
+import { Cocktail } from "../../shared/interfaces/cocktail.interface";
 import { CocktailService } from "../../shared/services/cocktail.service";
 
 @Component({
@@ -10,6 +11,7 @@ import { CocktailService } from "../../shared/services/cocktail.service";
 })
 export class CocktailFormComponent implements OnInit {
   public cocktailForm: FormGroup;
+  public cocktail: Cocktail;
 
   public get ingredients() {
     return this.cocktailForm.get("ingredients") as FormArray;
@@ -23,11 +25,31 @@ export class CocktailFormComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.activatedRoute.paramMap.subscribe((paramMap: ParamMap) => {
+      const index = +paramMap.get("index");
+      if (index !== null) {
+        this.cocktail = this.cocktailService.getCocktail(index);
+      }
+      this.initForm(this.cocktail);
+    });
+  }
+
+  private initForm(
+    cocktail: Cocktail = { name: "", description: "", img: "", ingredients: [] }
+  ): void {
     this.cocktailForm = this.fb.group({
-      name: ["", Validators.required],
-      img: ["", Validators.required],
-      description: "",
-      ingredients: this.fb.array([], Validators.required)
+      name: [cocktail.name, Validators.required],
+      img: [cocktail.img, Validators.required],
+      description: [cocktail.description, Validators.required],
+      ingredients: this.fb.array(
+        cocktail.ingredients.map(ingredient =>
+          this.fb.group({
+            name: [ingredient.name, Validators.required],
+            quantity: [ingredient.quantity, Validators.required]
+          })
+        ),
+        Validators.required
+      )
     });
   }
 
