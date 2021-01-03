@@ -63,7 +63,11 @@ export class CocktailFormComponent implements OnInit {
   }
 
   public submit(): void {
-    this.cocktailService.addCocktail(this.cocktailForm.value);
+    if (this.cocktail) {
+      this.cocktailService.editCocktail(this.cocktailForm.value);
+    } else {
+      this.cocktailService.addCocktail(this.cocktailForm.value);
+    }
     this.router.navigate([".."], { relativeTo: this.activatedRoute });
   }
 }
