@@ -6,10 +6,10 @@ import { CocktailService } from '../shared/services/cocktail.service';
 @Component({
   selector: 'app-cocktail-container',
   templateUrl: './cocktail-container.component.html',
-  styleUrls: ['./cocktail-container.component.scss']
+  styleUrls: ['./cocktail-container.component.scss'],
 })
 export class CocktailContainerComponent implements OnInit, OnDestroy {
-  public cocktails?: Cocktail[];
+  public cocktails!: Cocktail[];
   public subscription: Subscription = new Subscription();
 
   constructor(private cocktailService: CocktailService) {}
